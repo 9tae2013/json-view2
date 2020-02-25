@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.ZonedDateTime
@@ -32,31 +33,36 @@ fun main(args: Array<String>) {
 class SecretWriterConfig {
     @Bean
     fun secretWriter(mapper: ObjectMapper): ObjectWriter {
-        return mapper.writerWithView(Views.Secret::class.java)
+        return mapper.writerWithView(Secret::class.java)
     }
 }
 
 @RestController
-class CustomerController(val writer: ObjectWriter) {
+class CustomerController(val service: CustomerService) {
 
     @GetMapping("/customer")
-    fun customer(): Customer {
-        val customer = Customer(
-                "Emily",
-                "642 Buckhannan Avenue Stratford",
-                "111-111-111",
-                "222-222-222",
-                "emily@example.com",
-                Date.from(ZonedDateTime.now().minusYears(8).toInstant())
-        )
-        log.info("Get customer {}", writer.writeValueAsString(customer))
-        return customer;
+    fun customer(): Customer = service.create()
+
+}
+
+@Service
+class CustomerService(val writer: ObjectWriter) {
+    fun create() = Customer(
+            "Emily",
+            "642 Buckhannan Avenue Stratford",
+            "111-111-111",
+            "222-222-222",
+            "emily@example.com",
+            Date.from(ZonedDateTime.now().minusYears(8).toInstant())
+    ).also {
+        log.info("Get customer {}", writer.writeValueAsString(it))
     }
 
     companion object {
-        val log: Logger = LoggerFactory.getLogger(CustomerController::class.java)
+        private val log: Logger = LoggerFactory.getLogger(CustomerController::class.java)
     }
 }
+
 
 sealed class Views {
     sealed class Secret
