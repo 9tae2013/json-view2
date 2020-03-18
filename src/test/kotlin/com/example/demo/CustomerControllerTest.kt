@@ -1,12 +1,11 @@
 package com.example.demo
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -20,12 +19,12 @@ import java.util.*
 class CustomerControllerTest {
     @Autowired
     lateinit var mvc: MockMvc
-    @MockBean
+    @MockkBean
     lateinit var mockService: CustomerService
 
     @Test
     fun `should use default view on web`() {
-        val customer = Customer(
+        every { mockService.create() } returns Customer(
                 "Emily",
                 "642 Buckhannan Avenue Stratford",
                 "111-111-111",
@@ -33,7 +32,6 @@ class CustomerControllerTest {
                 "emily@example.com",
                 Date.from(ZonedDateTime.now().minusYears(8).toInstant())
         )
-        doReturn(customer).`when`(mockService).create()
 
         mvc.perform(get("/customer")
                 .accept(MediaType.APPLICATION_JSON))

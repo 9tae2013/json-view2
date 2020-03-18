@@ -1,7 +1,6 @@
 package com.example.demo
 
 import com.fasterxml.jackson.annotation.JsonView
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -11,8 +10,6 @@ import org.springframework.boot.test.json.JacksonTester
 
 @JsonTest
 class SecretJsonSerializerTest {
-    @Autowired
-    lateinit var mapper: ObjectMapper
     @Autowired(required = false)
     lateinit var json: JacksonTester<TestData>
 

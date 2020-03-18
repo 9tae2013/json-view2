@@ -22,7 +22,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(group = "org.mockito", module = "mockito-core")
     }
+    testImplementation("com.ninja-squad:springmockk:2.0.0")
 }
 
 tasks.withType<Test> {
